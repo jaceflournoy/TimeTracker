@@ -13,14 +13,16 @@ def get_browser_window():
     window = win32gui.GetForegroundWindow()
     browserControl = auto.ControlFromHandle(window)
     edit = browserControl.EditControl()
-    website = edit.GetValuePattern().Value.split('/')
+    website = edit.GetValuePattern().Value.split("/")
     return website[2]
+
 
 # Get active window title
 def get_active_window():
     window = win32gui.GetForegroundWindow()
     active_window = win32gui.GetWindowText(window)
     return active_window
+
 
 # Create empty activity list
 activity_list = {}
@@ -46,7 +48,9 @@ try:
                 end_time = datetime.now()
                 end_time = end_time.time()
                 start_time = start_time.time()
-                duration = datetime.combine(date.min, end_time) - datetime.combine(date.min, start_time)
+                duration = datetime.combine(date.min, end_time) - datetime.combine(
+                    date.min, start_time
+                )
                 try:
                     activity_list[active_window_name] += duration.seconds
                 except KeyError:
@@ -55,28 +59,30 @@ try:
             active_window_name = new_window_name
             count = 0
             start_time = datetime.now()
-        # If the active window name is the same as new_window_name, begin a new loop to start counting 
+        # If the active window name is the same as new_window_name, begin a new loop to start counting
         else:
             while active_window_name == new_window_name:
                 # Check the active window every second in order to trigger the conditional above if it changes
                 new_window_name = get_active_window()
                 count += 1
-                print(f'{active_window_name} - {count} - start: {start_time}')
+                print(f"{active_window_name} - {count} - start: {start_time}")
                 # print(f'{active_window_name.split("-")[-1].strip()} - {count} - start: {start_time}')
                 time.sleep(1)
 
-        # time.sleep(1)       
+        # time.sleep(1)
 # Listen for KeyboardInterrupt and add the last/most recent window to the dictionary with the same logic as above.
 except KeyboardInterrupt:
     if count != 0 or active_window_name != "":
-                end_time = datetime.now()
-                end_time = end_time.time()
-                start_time = start_time.time()
-                duration = datetime.combine(date.min, end_time) - datetime.combine(date.min, start_time)
-                try:
-                    activity_list[active_window_name] += duration.seconds
-                except KeyError:
-                    activity_list[active_window_name] = duration.seconds
+        end_time = datetime.now()
+        end_time = end_time.time()
+        start_time = start_time.time()
+        duration = datetime.combine(date.min, end_time) - datetime.combine(
+            date.min, start_time
+        )
+        try:
+            activity_list[active_window_name] += duration.seconds
+        except KeyError:
+            activity_list[active_window_name] = duration.seconds
     print(activity_list)
     exit()
 
