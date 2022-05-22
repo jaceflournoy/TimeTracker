@@ -85,3 +85,4 @@ except KeyboardInterrupt:
 # Determine best way to run app in the background and also have it able to listen for exit
 # Add the ability to pause for lunch/bathroom breaks, etc...
 # Possibly build a UI so it will be easier to achieve the above
+# Cross-platform support
