@@ -52,9 +52,13 @@ try:
                     date.min, start_time
                 )
                 try:
-                    activity_list[active_window_name] += duration.seconds
+                    activity_list[active_window_name.encode('ascii', 'ignore').strip().decode('ascii')] += duration.seconds
                 except KeyError:
-                    activity_list[active_window_name] = duration.seconds
+                    activity_list[active_window_name.encode('ascii', 'ignore').strip().decode('ascii')] = duration.seconds
+                print(new_window_name)
+                with open('activity-' + str(date.today()) + ".txt", 'w') as f:
+                    for activity, seconds in activity_list.items():
+                        f.write(f'{activity} - {seconds}\n')
             # Set the active window name to the same as the new window name and reset variables that track duration.
             active_window_name = new_window_name
             count = 0
@@ -65,13 +69,17 @@ try:
                 # Check the active window every second in order to trigger the conditional above if it changes
                 new_window_name = get_active_window()
                 count += 1
-                print(f"{active_window_name} - {count} - start: {start_time}")
+                # print(f"{active_window_name} - {count} - start: {start_time}")
                 # print(f'{active_window_name.split("-")[-1].strip()} - {count} - start: {start_time}')
                 time.sleep(1)
 
         # time.sleep(1)
 # Listen for KeyboardInterrupt and add the last/most recent window to the dictionary with the same logic as above.
 except KeyboardInterrupt:
+    print("Program was terminated.")
+except Exception as e:
+    print(str(e))
+finally:
     if count != 0 or active_window_name != "":
         end_time = datetime.now()
         end_time = end_time.time()
@@ -80,14 +88,17 @@ except KeyboardInterrupt:
             date.min, start_time
         )
         try:
-            activity_list[active_window_name] += duration.seconds
+            activity_list[active_window_name.encode('ascii', 'ignore').strip().decode('ascii')] += duration.seconds
         except KeyError:
-            activity_list[active_window_name] = duration.seconds
+            activity_list[active_window_name.encode('ascii', 'ignore').strip().decode('ascii')] = duration.seconds
     print(activity_list)
+    with open('activity-' + str(date.today()) + ".txt", 'w') as f:
+                    for activity, seconds in activity_list.items():
+                        f.write(f'{activity} - {seconds}\n')
     exit()
 
 # TODO:
-# Summarize the activity once the program exits and possibly write it to a file with today's date
+# If a file with today's date already exits, import the list of activities into the dictionary and begin loop again.
 # Determine best way to run app in the background and also have it able to listen for exit
 # Add the ability to pause for lunch/bathroom breaks, etc...
 # Possibly build a UI so it will be easier to achieve the above
